@@ -1,6 +1,6 @@
 import express from "express"
 import cors from "cors"
-
+import prisma from "../db"
 const app = express()
 const port = 3000
 
@@ -14,19 +14,27 @@ app.get("/", (req, res) => {
   res.send("Hello World!")
 })
 
-app.post("/api/v1/ad", (req, res) => {
-   console.log(req.body)
-   console.log(req.query)
-   res.send("Ad created")
+app.post("/api/v1/ad", async(req, res) => {
+  const {title, startAt, endAt, conditions} = req.body
+  // const {ageStart, ageEnd,country,platform} = conditions
+  await prisma.ad.create({
+    data: {
+      title,
+      startAt,
+      endAt,
+      conditions: {
+        create: conditions
+      }
+    }
+  })
+  res.send("Ad created")
 })
 app.get("/api/v1/ad", (req, res) => {
-    console.log(req.query)
     const {offset, limit, age, gender, country, platform} = req.query
-    console.log(offset, limit, age, gender, country, platform)
+    
     res.send("Ad created")
- })
+})
 
 app.listen(port, () => { 
     console.log(`Server is running at http://localhost:${port}`)
 })
-

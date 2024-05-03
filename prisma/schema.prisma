@@ -1,0 +1,27 @@
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Condition {
+    id       String   @id @default(cuid())
+    ageStart Int
+    ageEnd   Int
+    country  String[]
+    platform String[]
+    Ad       Ad       @relation(fields: [adId], references: [id])
+    adId     String
+}
+
+model Ad {
+    id         String      @id @default(cuid())
+    title      String
+    startAt    DateTime
+    endAt      DateTime
+    conditions Condition[]
+}
